@@ -10,7 +10,7 @@ from fpdf import FPDF
 import platform
 import os
 
-client = genai.Client(api_key='AIzaSyDFhA1whgmV9FRuGDlj-Q3_hfIApApGNmA')
+client = genai.Client(api_key='Axxxxxxxxyxxxjxxkjxjxmx')
 
 class MCQGenerator(toga.App):
     def startup(self):
