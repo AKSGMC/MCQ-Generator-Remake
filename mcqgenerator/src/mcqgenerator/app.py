@@ -10,7 +10,7 @@ from fpdf import FPDF
 import platform
 import os
 
-client = genai.Client(api_key='xxxxxxx')
+client = genai.Client(api_key='AIzaSyDFhA1whgmV9FRuGDlj-Q3_hfIApApGNmA')
 
 class MCQGenerator(toga.App):
     def startup(self):
@@ -144,24 +144,23 @@ class MCQGenerator(toga.App):
     def Question_Generate(self,widget):
         #generating questions
         try:
-            self.Generated_Question = client.models.generate_content(
+            self.Generated= client.models.generate_content(
                 model="gemini-2.0-flash",
-                contents='''Generate {} MCQ Question and {} choices with one correct choice
-                and don't highlight the answer and question. And also generate the answer below each question with explanation
-                from the paragraph: {}'''.format(self.paragraph_question_value,self.paragraph_choice_value,self.paragraph_value),
+                contents='''Generate {} MCQ Question with {} choices with one correct choice
+                    and don't highlight the answer and question. And also generate the answer below each question with explanation without any unicode
+                 from the paragraph: {}'''.format(self.paragraph_question_value,self.paragraph_choice_value,self.paragraph_value),
             )
-            self.str_Generated_Question= self.Generated_Question.text
-        except:
+        except Exception as e:
             wait_label=toga.Label("Error in generating answer.\nPlease Check your Internet Connection and reopen the app ",style=Pack(font_size=15,padding_top=10,text_align=CENTER))
             self.main_box.add(wait_label)
+            print(str(e))
             
         #calling file type caller
         self.file_type_on_change(widget)
 
 
     #file creation
-    def pdf_file_question_write(self, widget):
-        try:
+    def pdf_file_question_write(self,widget):
             os_name = platform.system()
             if os_name == "Windows":
                 # Use the Desktop directory
@@ -182,15 +181,15 @@ class MCQGenerator(toga.App):
             # Create a PDF using fpdf2
             pdf = FPDF()
             pdf.add_page()
-            pdf.set_font("helvetica", size=12)
-            pdf.write(text=self.str_Generated_Question)
+            pdf.set_font('Helvetica',size=12)
+            txt_Generated=str(self.Generated.text)
+            pdf.write(text=txt_Generated)
             pdf.set_author("MCQ Generator")
             pdf.set_title("Generated Questions")
             # Save the PDF
             pdf.output(output_path)
 
-        except Exception as e:
-            print(f"An error occurred: {str(e)}")
+        
      
     def txt_file_question_write(widget):
         pass
